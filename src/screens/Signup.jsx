@@ -5,30 +5,41 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ImageBackground,
+  Image,
   ScrollView,
   View,
   TextInput,
   Alert,
-  Image,
 } from "react-native";
 import Checkbox from "expo-checkbox";
-
+import validateForm from "./Validation";
 export default function Signup() {
+  const [fullname, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmedPassword, setConfirmedPassword] = useState("");
   const [isChecked, setChecked] = useState(false);
 
   return (
-    <ScrollView style={{ paddingBottom: 20, backgroundColor: "#fff" }}>
+    <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
       <StatusBar style="dark" />
       <View style={styles.Container}>
-        <View style={{ marginTop: 120 }}>
-          <Text style={styles.wtext}>Create Account</Text>
-          <Text style={styles.ttext}>Sign up to get started!</Text>
+        <View
+          style={{
+            marginTop: 120,
+            flexDirection: "row",
+          }}
+        >
+          <View style={{ width: 180, height: 120 }}>
+            <Text style={styles.wtext}>Create Account</Text>
+            <Text style={styles.ttext}>Sign up to get started!</Text>
+          </View>
+
+          <Image
+            style={styles.createimage}
+            source={require("../../assets/createimage.png")}
+          />
         </View>
-        <ImageBackground
-          style={styles.createimage}
-          source={require("../../assets/createimage.png")}
-        ></ImageBackground>
         <View
           style={[
             styles.c2,
@@ -42,25 +53,33 @@ export default function Signup() {
             style={styles.inputtext}
             placeholder="Full Name"
             placeholderTextColor="#a39e9e"
+            value={fullname}
+            onChangeText={setFullName}
           />
           <TextInput
             style={styles.inputtext}
             placeholder="Email Address"
             placeholderTextColor="#a39e9e"
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput
             style={styles.inputtext}
             placeholder="Password"
             secureTextEntry={true}
             placeholderTextColor="#a39e9e"
+            value={password}
+            onChangeText={setPassword}
           />
           <TextInput
             style={styles.inputtext}
             placeholder="Confirm Password"
             secureTextEntry={true}
             placeholderTextColor="#a39e9e"
+            value={confirmedPassword}
+            onChangeText={setConfirmedPassword}
           />
-          <StatusBar style="auto" />
+
           <View style={styles.termsContainer}>
             <Checkbox
               value={isChecked}
@@ -68,7 +87,7 @@ export default function Signup() {
               color={isChecked ? "#7C4DFF" : undefined}
             />
             <Text style={{ fontSize: 14, color: "#000000", marginLeft: 5 }}>
-              I agree to the{" "}
+              I agree to the
             </Text>
             <TouchableOpacity
               onPress={() => Alert.alert("Terms&Conditions button pressed!")}
@@ -104,7 +123,15 @@ export default function Signup() {
           </View>
           <TouchableOpacity
             style={styles.signupbutton}
-            onPress={() => Alert.alert("Sign up button pressed!")}
+            onPress={() =>
+              validateForm(
+                fullname,
+                email,
+                password,
+                confirmedPassword,
+                isChecked,
+              )
+            }
             activeOpacity={0.7}
           >
             <Text
@@ -151,7 +178,7 @@ export default function Signup() {
           <View style={styles.loginbutton}>
             <Text>Already have an account?</Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
+              onPress={() => Alert.alert("Login")}
               activeOpacity={0.7}
             >
               <Text
@@ -173,7 +200,7 @@ export default function Signup() {
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 10,
   },
 
   wtext: {
@@ -188,17 +215,14 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   createimage: {
-    width: "80%",
-    height: 180,
-    resizeMode: "contain",
-    marginLeft: 140,
-    marginTop: -100,
+    width: "50%",
+    height: 120,
+    resizeMode: "cover",
   },
   c2: {
     flex: 1,
     width: "100%",
     backgroundColor: "#fff",
-    marginTop: -20,
   },
   inputtext: {
     width: "90%",
@@ -211,6 +235,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     borderColor: "#d6d0d0",
     borderWidth: 0.5,
+    // marginLeft: "4%",
+    alignSelf: "center",
   },
   signupbutton: {
     width: "90%",
@@ -259,11 +285,10 @@ const styles = StyleSheet.create({
   },
   termsContainer: {
     flexDirection: "row",
-    fontSize: 14,
     // flexWrap: "wrap",
     marginTop: 10,
-    paddingHorizontal: 10,
-    marginLeft: -10,
+    paddingRight: 20,
+    alignItems: "center",
   },
   headerContainer: {
     flexDirection: "row",
