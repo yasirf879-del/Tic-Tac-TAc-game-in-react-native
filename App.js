@@ -1,4 +1,4 @@
-import Signup from './src/screens/Signup.jsx'
+import MainNavigator from "./src/navigation/MainNavigator";
 export default function App() {
-  return <Signup />;
+  return <MainNavigator />;
 }

@@ -1,6 +1,8 @@
 import { StatusBar } from "expo-status-bar";
-
+import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
+import * as Icon from "@expo/vector-icons";
+import { TextInputs } from "../components";
 import {
   StyleSheet,
   Text,
@@ -8,17 +10,20 @@ import {
   Image,
   ScrollView,
   View,
-  TextInput,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+import { Buttons } from "../components";
 import Checkbox from "expo-checkbox";
 import validateForm from "./Validation";
 export default function Signup() {
+  const navigation = useNavigation();
   const [fullname, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [isChecked, setChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
@@ -49,35 +54,51 @@ export default function Signup() {
             },
           ]}
         >
-          <TextInput
-            style={styles.inputtext}
+          <TextInputs
             placeholder="Full Name"
             placeholderTextColor="#a39e9e"
             value={fullname}
             onChangeText={setFullName}
+            showIcon={true}
+            icon="person"
+            iconColor="#7C4DFF"
+            iconSize={20}
           />
-          <TextInput
-            style={styles.inputtext}
+
+          <TextInputs
             placeholder="Email Address"
             placeholderTextColor="#a39e9e"
             value={email}
             onChangeText={setEmail}
+            showIcon={true}
+            icon="mail"
+            iconColor="#7C4DFF"
+            iconSize={20}
           />
-          <TextInput
-            style={styles.inputtext}
+
+          <TextInputs
             placeholder="Password"
-            secureTextEntry={true}
             placeholderTextColor="#a39e9e"
+            secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
+            showIcon={true}
+            icon="lock"
+            iconColor="#7C4DFF"
+            iconSize={20}
           />
-          <TextInput
-            style={styles.inputtext}
+
+          <TextInputs
             placeholder="Confirm Password"
             secureTextEntry={true}
             placeholderTextColor="#a39e9e"
+            secureTextEntry={true}
             value={confirmedPassword}
             onChangeText={setConfirmedPassword}
+            showIcon={true}
+            icon="lock"
+            iconColor="#7C4DFF"
+            iconSize={20}
           />
 
           <View style={styles.termsContainer}>
@@ -121,8 +142,8 @@ export default function Signup() {
               </Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.signupbutton}
+          <Buttons
+            title="Sign up"
             onPress={() =>
               validateForm(
                 fullname,
@@ -130,20 +151,18 @@ export default function Signup() {
                 password,
                 confirmedPassword,
                 isChecked,
+                setIsLoading,
+                navigation,
               )
             }
-            activeOpacity={0.7}
-          >
-            <Text
-              style={{
-                color: "#ffffff",
-                fontSize: 18,
-                fontWeight: "bold",
-              }}
-            >
-              Sign up
-            </Text>
-          </TouchableOpacity>
+            showIcon={false}
+            iconColor="#ffffff"
+            iconSize={20}
+            iconFamily="Ionicons"
+          />
+          {isLoading ? (
+            <ActivityIndicator size="large" color="#010102" />
+          ) : null}
           <Text style={styles.textline}>
             ──────── or continue with ────────
           </Text>
@@ -178,7 +197,7 @@ export default function Signup() {
           <View style={styles.loginbutton}>
             <Text>Already have an account?</Text>
             <TouchableOpacity
-              onPress={() => Alert.alert("Login")}
+              onPress={() => navigation.navigate("Login")}
               activeOpacity={0.7}
             >
               <Text
@@ -220,34 +239,9 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   c2: {
-    flex: 1,
+    height: "100%",
     width: "100%",
     backgroundColor: "#fff",
-  },
-  inputtext: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#f2f2f2",
-    borderRadius: 10,
-    marginTop: 20,
-    paddingLeft: 20,
-    fontSize: 16,
-    fontWeight: "bold",
-    borderColor: "#d6d0d0",
-    borderWidth: 0.5,
-    // marginLeft: "4%",
-    alignSelf: "center",
-  },
-  signupbutton: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#7C4DFF",
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    marginTop: 20,
-    opacity: 0.9,
   },
   textline: {
     textAlign: "center",
@@ -285,7 +279,6 @@ const styles = StyleSheet.create({
   },
   termsContainer: {
     flexDirection: "row",
-    // flexWrap: "wrap",
     marginTop: 10,
     paddingRight: 20,
     alignItems: "center",

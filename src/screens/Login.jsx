@@ -1,9 +1,39 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { TextInput, ImageBackground, Image } from "react-native";
-import { Button, Alert } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View, Alert, ActivityIndicator } from "react-native";
+import { ImageBackground, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Buttons, TextInputs } from "../components";
+import { auth } from "../../firebase.config";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLogin = () => {
+    if (email.trim() === "") {
+      Alert.alert("Error", "Email is required.");
+      return;
+    }
+    if (password.trim() === "") {
+      Alert.alert("Error", "Password is required.");
+      return;
+    }
+
+    setIsLoading(true);
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setIsLoading(false);
+        navigation.replace("Homepage");
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        Alert.alert("Error", error.message);
+      });
+  };
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -11,7 +41,7 @@ export default function Login() {
         source={require("../../assets/i.png")}
         resizeMode="cover"
       >
-        <Text style={styles.wtext}>Welcome Back</Text>
+        <Text style={styles.wtext}>Welcome Back </Text>
         <Text style={styles.ttext}>Login to start your journey!</Text>
       </ImageBackground>
       <View
@@ -23,16 +53,27 @@ export default function Login() {
           },
         ]}
       >
-        <TextInput
-          style={styles.inputtext}
+        <TextInputs
           placeholder="Email Address"
           placeholderTextColor="#a39e9e"
+          value={email}
+          onChangeText={setEmail}
+          showIcon={true}
+          icon="mail"
+          iconColor="#7C4DFF"
+          iconSize={20}
         />
-        <TextInput
-          style={styles.inputtext}
+
+        <TextInputs
           placeholder="Password"
-          secureTextEntry={true}
           placeholderTextColor="#a39e9e"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={setPassword}
+          showIcon={true}
+          icon="lock"
+          iconColor="#7C4DFF"
+          iconSize={20}
         />
         <StatusBar style="auto" />
         <TouchableOpacity
@@ -52,21 +93,23 @@ export default function Login() {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.loginbutton}
-          onPress={() => Alert.alert("Login button pressed!")}
-          activeOpacity={0.7}
-        >
-          <Text
-            style={{
-              color: "#ffffff",
-              fontSize: 16,
-              fontWeight: "bold",
-            }}
-          >
-            Login
-          </Text>
-        </TouchableOpacity>
+        <Buttons
+          title={isLoading ? "" : "Login"}
+          onPress={handleLogin}
+          showIcon={false}
+          iconColor="#ffffff"
+          iconSize={20}
+          iconFamily="Ionicons"
+          disabled={isLoading}
+        />
+        {isLoading && (
+          <ActivityIndicator
+            size="small"
+            color="#ffffff"
+            style={{ position: "absolute", alignSelf: "center", marginTop: 48 }}
+          />
+        )}
+
         <Text style={styles.textline}>──────── or continue with ────────</Text>
         <View
           style={{
@@ -99,7 +142,7 @@ export default function Login() {
         <View style={styles.signupbutton}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
-            onPress={() => Alert.alert("Sign up button pressed!")}
+            onPress={() => navigation.navigate("Signup")}
             activeOpacity={0.7}
           >
             <Text
@@ -159,17 +202,7 @@ const styles = StyleSheet.create({
     borderColor: "#d6d0d0",
     borderWidth: 0.5,
   },
-  loginbutton: {
-    width: "80%",
-    height: 50,
-    backgroundColor: "#7C4DFF",
-    borderRadius: 28,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    marginTop: 20,
-    opacity: 0.9,
-  },
+
   textline: {
     textAlign: "center",
     marginTop: 10,

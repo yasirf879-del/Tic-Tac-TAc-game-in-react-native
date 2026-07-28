@@ -1,10 +1,14 @@
-import { Alert, trim } from "react-native";
+import { Alert } from "react-native";
+import { auth } from "../../firebase.config";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 const validateForm = (
   fullname,
   email,
   password,
   confirmedPassword,
   isChecked,
+  setIsLoading,
+  navigation,
 ) => {
   // Full Name
   if (fullname.trim() === "") {
@@ -78,7 +82,16 @@ const validateForm = (
     Alert.alert("Terms & Conditions", "Please accept the Terms & Conditions.");
     return;
   }
-
-  Alert.alert("Success", "Account Created Successfully!");
+  setIsLoading(true);
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      setIsLoading(false);
+      Alert.alert("Success", "Account created successfully!");
+      navigation.replace("Homepage");
+    })
+    .catch((error) => {
+      setIsLoading(false);
+      Alert.alert("Error", error.message);
+    });
 };
 export default validateForm;
