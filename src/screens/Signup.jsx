@@ -24,6 +24,28 @@ export default function Signup() {
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const handleSignup = async () => {
+    try {
+      setIsLoading(true);
+
+      await validateForm(
+        fullname,
+        email,
+        password,
+        confirmedPassword,
+        isChecked,
+      );
+
+      setIsLoading(false);
+
+      Alert.alert("Success", "Account created successfully!");
+
+      navigation.replace("Homepage", { email });
+    } catch (error) {
+      setIsLoading(false);
+      Alert.alert("Error", error.message);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
@@ -144,25 +166,23 @@ export default function Signup() {
           </View>
           <Buttons
             title="Sign up"
-            onPress={() =>
-              validateForm(
-                fullname,
-                email,
-                password,
-                confirmedPassword,
-                isChecked,
-                setIsLoading,
-                navigation,
-              )
-            }
+            onPress={handleSignup}
             showIcon={false}
             iconColor="#ffffff"
             iconSize={20}
             iconFamily="Ionicons"
           />
-          {isLoading ? (
-            <ActivityIndicator size="large" color="#010102" />
-          ) : null}
+          {isLoading && (
+            <ActivityIndicator
+              size="large"
+              color="#010102"
+              style={{
+                position: "absolute",
+                alignSelf: "center",
+                marginTop: 48,
+              }}
+            />
+          )}
           <Text style={styles.textline}>
             ──────── or continue with ────────
           </Text>

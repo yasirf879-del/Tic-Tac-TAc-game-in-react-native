@@ -2,17 +2,16 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
+
     alignItems: "center",
     justifyContent: "center",
   },
   headercontainer: {
     width: "100%",
     height: 110,
-
+    backgroundColor: "#7C4DFF",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
   },
   headerText: {
     fontSize: 30,
@@ -20,6 +19,10 @@ const styles = StyleSheet.create({
     fontFamily: "inter",
     textAlign: "center",
     paddingTop: 20,
+    color: "#fff",
+  },
+  saloganText: {
+    color: "#fff",
   },
   playerTurncontainer: {
     width: "90%",
@@ -120,6 +123,29 @@ const styles = StyleSheet.create({
   footerIcon: {
     alignItems: "center",
     justifyContent: "center",
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+
+  blur: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+
+  backdrop: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
 });
 export default styles;

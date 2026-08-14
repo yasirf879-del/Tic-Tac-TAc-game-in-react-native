@@ -1,6 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Alert, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { ImageBackground, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Buttons, TextInputs } from "../components";
@@ -100,12 +107,11 @@ export default function Login() {
           iconColor="#ffffff"
           iconSize={20}
           iconFamily="Ionicons"
-          disabled={isLoading}
         />
         {isLoading && (
           <ActivityIndicator
-            size="small"
-            color="#ffffff"
+            size="large"
+            color="#070707"
             style={{ position: "absolute", alignSelf: "center", marginTop: 48 }}
           />
         )}

@@ -5,12 +5,16 @@ import {
   TouchableOpacity,
   StatusBar,
 } from "react-native";
+import { BlurView } from "expo-blur";
 import styles from "./Homepage_style";
 import * as Icon from "@expo/vector-icons";
+import { useState } from "react";
+import Profile from "../screens/Profile";
 export default function Homepage() {
+  const [showProfile, setShowProfile] = useState(false);
   return (
-    <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <StatusBar style="dark" />
         <View style={styles.headercontainer}>
           <Text style={styles.headerText}>Tic Tac Toe</Text>
@@ -20,18 +24,18 @@ export default function Homepage() {
           <Text style={styles.turnText}>Current turn</Text>
           <Text style={styles.choiceText}>X</Text>
 
-          <Text style={styles.saloganText}>Player X's turn</Text>
+          <Text>Player X's turn</Text>
         </View>
         <View style={styles.ScoreContainer}>
           <View style={styles.playercard}>
             <Text>Player X(score)</Text>
             <Text style={styles.scorewinText}>wins:</Text>
-            <Text style={styles.scoreloseText}>looses:</Text>
+            <Text style={styles.scoreloseText}>losses:</Text>
           </View>
           <View style={styles.playercard}>
             <Text>Player Y(score)</Text>
             <Text style={styles.scorewinText}>wins:</Text>
-            <Text style={styles.scoreloseText}>looses:</Text>
+            <Text style={styles.scoreloseText}>losses:</Text>
           </View>
         </View>
         <View style={styles.gameContainer}>
@@ -68,7 +72,7 @@ export default function Homepage() {
             New Game
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerIcon}>
           <Icon.Ionicons name="home" size={20} color="black" />
@@ -80,11 +84,28 @@ export default function Homepage() {
 
           <Text style={styles.footerText}>Score</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.footerIcon}>
+        <TouchableOpacity
+          style={styles.footerIcon}
+          onPress={() => setShowProfile(true)}
+        >
           <Icon.Ionicons name="person" size={20} color="black" />
           <Text style={styles.footerText}>Profile</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+
+      {showProfile && (
+        <View style={styles.overlay}>
+          <BlurView intensity={60} tint="light" style={styles.blur} />
+
+          <TouchableOpacity
+            style={styles.backdrop}
+            activeOpacity={1}
+            onPress={() => setShowProfile(false)}
+          />
+
+          <Profile onClose={() => setShowProfile(false)} />
+        </View>
+      )}
+    </View>
   );
 }
