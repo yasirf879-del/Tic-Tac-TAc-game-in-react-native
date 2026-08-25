@@ -2,9 +2,6 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    alignItems: "center",
-    justifyContent: "center",
   },
   headercontainer: {
     width: "100%",
@@ -26,23 +23,27 @@ const styles = StyleSheet.create({
   },
   playerTurncontainer: {
     width: "90%",
-    height: 100,
-    marginTop: 5,
+    height: 105,
+    marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 0.5,
-    borderRadius: 10,
-    borderWidth: 0.1,
+    elevation: 2,
+    borderRadius: 15,
+    borderWidth: 1,
     backgroundColor: "#fff",
-    borderColor: "#ccc",
+    borderColor: "#E0E0E0",
+    marginLeft: 20,
   },
+
   choiceText: {
-    fontSize: 30,
+    fontSize: 28,
     fontWeight: "bold",
-    fontFamily: "inter",
+
     textAlign: "center",
     color: "#7C4DFF",
+    marginTop: 2,
   },
+
   ScoreContainer: {
     width: "100%",
     height: 100,
@@ -52,17 +53,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 30,
   },
+
   playercard: {
     width: "40%",
     height: 100,
     justifyContent: "center",
     alignItems: "center",
-
-    elevation: 0.5,
-    borderRadius: 10,
-    borderWidth: 0.1,
+    elevation: 2,
+    borderRadius: 15,
+    borderWidth: 1,
     backgroundColor: "#fff",
-    borderColor: "#ccc",
+    borderColor: "#E0E0E0",
   },
   scorewinText: {
     color: "#1a922cb9",
@@ -70,50 +71,83 @@ const styles = StyleSheet.create({
   scoreloseText: {
     color: "#bd2e2e",
   },
+  gamesCount: {
+    width: "100%",
+    height: 50,
+    marginTop: 5,
+
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  totalGame: {
+    width: "40%",
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 2,
+    borderRadius: 15,
+    borderWidth: 1,
+    backgroundColor: "#fff",
+    borderColor: "#E0E0E0",
+  },
+  totalGameText: {
+    color: "#1a1010",
+  },
 
   gameContainer: {
     width: "90%",
-    height: 280,
-    marginTop: 10,
+    height: 260,
+    marginTop: 5,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 0.5,
-    borderRadius: 10,
-    borderWidth: 0.1,
+    elevation: 2,
+    borderRadius: 15,
+    borderWidth: 1,
     backgroundColor: "#fff",
     borderColor: "#ccc",
+    marginLeft: 20,
   },
+
   box: {
     width: 80,
     height: 80,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 0.5,
     borderWidth: 0.5,
     backgroundColor: "#d9e9eb",
     borderColor: "#4e99cf",
   },
+  boxText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#272137",
+  },
+
   NEWGAME: {
-    width: "50%",
-    height: 40,
+    width: "55%",
+    height: 45,
     backgroundColor: "#7C4DFF",
-    borderRadius: 28,
+    borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     marginTop: 10,
-    opacity: 0.9,
+
     flexDirection: "row",
-    gap: 5,
+    gap: 8,
+    elevation: 3,
   },
   footer: {
     width: "100%",
-    height: 90,
+    height: 80,
     backgroundColor: "#fff",
-    justifyContent: "space-evenly",
-    marginTop: 40,
+    justifyContent: "space-around",
+
     flexDirection: "row",
     alignItems: "center",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E5E5",
   },
   footerText: {
     fontSize: 12,
@@ -146,6 +180,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+  },
+  winningBox: {
+    backgroundColor: "#DFF6DD",
+    borderWidth: 2,
+    borderColor: "#2E7D32",
+  },
+
+  activePlayer: {
+    borderWidth: 2,
+    borderColor: "#7C4DFF",
   },
 });
 export default styles;
