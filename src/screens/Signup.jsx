@@ -15,7 +15,10 @@ import {
 } from "react-native";
 import { Buttons } from "../components";
 import Checkbox from "expo-checkbox";
-import validateForm from "./Validation";
+import getSignupValidationError from "./Validation";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../firebase.config";
+import { useGoogleLogin, useFacebookLogin } from "../auth/socialAuth";
 export default function Signup() {
   const navigation = useNavigation();
   const [fullname, setFullName] = useState("");
@@ -24,26 +27,38 @@ export default function Signup() {
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const google = useGoogleLogin();
+  const facebook = useFacebookLogin();
+  const socialLoading = google.loading || facebook.loading;
   const handleSignup = async () => {
+    const validationError = getSignupValidationError(
+      fullname,
+      email,
+      password,
+      confirmedPassword,
+      isChecked,
+    );
+
+    if (validationError) {
+      Alert.alert("Check your details", validationError);
+      return;
+    }
+
     try {
       setIsLoading(true);
 
-      await validateForm(
-        fullname,
-        email,
+      const credential = await createUserWithEmailAndPassword(
+        auth,
+        email.trim(),
         password,
-        confirmedPassword,
-        isChecked,
       );
-
-      setIsLoading(false);
+await updateProfile(credential.user, { displayName: fullname.trim() });
 
       Alert.alert("Success", "Account created successfully!");
-
-      navigation.replace("Homepage", { email });
     } catch (error) {
-      setIsLoading(false);
       Alert.alert("Error", error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -92,6 +107,9 @@ export default function Signup() {
             placeholderTextColor="#a39e9e"
             value={email}
             onChangeText={setEmail}
+            autoCapitalize="none"
+            autoComplete="email"
+            keyboardType="email-address"
             showIcon={true}
             icon="mail"
             iconColor="#7C4DFF"
@@ -104,6 +122,7 @@ export default function Signup() {
             secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
+            autoComplete="new-password"
             showIcon={true}
             icon="lock"
             iconColor="#7C4DFF"
@@ -112,11 +131,11 @@ export default function Signup() {
 
           <TextInputs
             placeholder="Confirm Password"
-            secureTextEntry={true}
             placeholderTextColor="#a39e9e"
             secureTextEntry={true}
             value={confirmedPassword}
             onChangeText={setConfirmedPassword}
+            autoComplete="new-password"
             showIcon={true}
             icon="lock"
             iconColor="#7C4DFF"
@@ -133,7 +152,7 @@ export default function Signup() {
               I agree to the
             </Text>
             <TouchableOpacity
-              onPress={() => Alert.alert("Terms&Conditions button pressed!")}
+              onPress={() => navigation.navigate("TermsConditions")}
               activeOpacity={0.7}
             >
               <Text
@@ -149,7 +168,7 @@ export default function Signup() {
             </TouchableOpacity>
             <Text> and </Text>
             <TouchableOpacity
-              onPress={() => Alert.alert("Privacy Policy button pressed!")}
+              onPress={() => navigation.navigate("PrivacyPolicy")}
               activeOpacity={0.7}
             >
               <Text
@@ -165,8 +184,9 @@ export default function Signup() {
             </TouchableOpacity>
           </View>
           <Buttons
-            title="Sign up"
+            title={isLoading ? "Creating account..." : "Sign up"}
             onPress={handleSignup}
+            disabled={isLoading}
             showIcon={false}
             iconColor="#ffffff"
             iconSize={20}
@@ -197,7 +217,8 @@ export default function Signup() {
           >
             <TouchableOpacity
               style={styles.continueButton}
-              onPress={() => Alert.alert("Google button pressed!")}
+              onPress={google.signIn}
+              disabled={socialLoading}
             >
               <Image
                 style={styles.imageto}
@@ -206,7 +227,8 @@ export default function Signup() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.continueButton}
-              onPress={() => Alert.alert("Facebook button pressed!")}
+              onPress={facebook.signIn}
+              disabled={socialLoading}
             >
               <Image
                 style={styles.imageto}
@@ -214,6 +236,13 @@ export default function Signup() {
               />
             </TouchableOpacity>
           </View>
+          {socialLoading && (
+            <ActivityIndicator
+              size="small"
+              color="#7C4DFF"
+              style={{ marginTop: 14, alignSelf: "center" }}
+            />
+          )}
           <View style={styles.loginbutton}>
             <Text>Already have an account?</Text>
             <TouchableOpacity

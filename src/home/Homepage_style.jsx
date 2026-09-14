@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   playerTurncontainer: {
     width: "90%",
-    height: 105,
+    minHeight: 110,
     marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -35,6 +35,16 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
 
+  turnStatus: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#555",
+    textAlign: "center",
+    width: "100%",
+    paddingHorizontal: 24,
+    marginTop: 4,
+  },
+
   choiceText: {
     fontSize: 28,
     fontWeight: "bold",
@@ -42,6 +52,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#7C4DFF",
     marginTop: 2,
+  },
+
+  turnText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
   },
 
   ScoreContainer: {
@@ -117,11 +133,13 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     backgroundColor: "#d9e9eb",
     borderColor: "#4e99cf",
+    overflow: "hidden",
   },
   boxText: {
     fontSize: 20,
     fontWeight: "bold",
     color: "#272137",
+    textAlign: "center",
   },
 
   NEWGAME: {
@@ -132,7 +150,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    marginTop: 10,
+    marginTop: 5,
 
     flexDirection: "row",
     gap: 8,
@@ -143,7 +161,7 @@ const styles = StyleSheet.create({
     height: 80,
     backgroundColor: "#fff",
     justifyContent: "space-around",
-
+    marginTop: 5,
     flexDirection: "row",
     alignItems: "center",
     borderTopWidth: 1,

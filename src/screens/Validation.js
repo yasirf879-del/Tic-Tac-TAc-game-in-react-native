@@ -1,87 +1,58 @@
-import { Alert } from "react-native";
-import { auth } from "../../firebase.config";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-const validateForm = (
+const getSignupValidationError = (
   fullname,
   email,
   password,
   confirmedPassword,
   isChecked,
-  setIsLoading,
 ) => {
-  // Full Name
   if (fullname.trim() === "") {
-    Alert.alert("Error", "Full Name is required.");
-    return;
+    return "Full name is required.";
   }
 
-  // Email
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+  const normalizedEmail = email.trim();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (email.trim() === "") {
-    Alert.alert("Error", "Email is required.");
-    return;
+  if (normalizedEmail === "") {
+    return "Email is required.";
   }
 
-  if (!emailRegex.test(email)) {
-    Alert.alert("Invalid Email", "Please enter a valid Gmail address.");
-    return;
+  if (!emailRegex.test(normalizedEmail)) {
+    return "Enter a valid email address.";
   }
 
-  // Password
   if (password.length < 8) {
-    Alert.alert("Weak Password", "Password must be at least 8 characters.");
-    return;
+    return "Password must be at least 8 characters.";
   }
 
   if (!/[A-Z]/.test(password)) {
-    Alert.alert(
-      "Weak Password",
-      "Password must contain at least one uppercase letter.",
-    );
-    return;
+    return "Password must contain at least one uppercase letter.";
   }
 
   if (!/[a-z]/.test(password)) {
-    Alert.alert(
-      "Weak Password",
-      "Password must contain at least one lowercase letter.",
-    );
-    return;
+    return "Password must contain at least one lowercase letter.";
   }
 
   if (!/[0-9]/.test(password)) {
-    Alert.alert("Weak Password", "Password must contain at least one number.");
-    return;
+    return "Password must contain at least one number.";
   }
 
   if (!/[!@#$%^&*]/.test(password)) {
-    Alert.alert(
-      "Weak Password",
-      "Password must contain at least one special character.",
-    );
-    return;
+    return "Password must contain at least one special character.";
   }
 
-  // Confirm Password
-
   if (confirmedPassword === "") {
-    Alert.alert("Error", "Please confirm your password.");
-    return;
+    return "Please confirm your password.";
   }
 
   if (password !== confirmedPassword) {
-    Alert.alert("Error", "Passwords do not match.");
-    return;
+    return "Passwords do not match.";
   }
-
-  // Checkbox
 
   if (!isChecked) {
-    Alert.alert("Terms & Conditions", "Please accept the Terms & Conditions.");
-    return;
+    return "Please accept the Terms & Conditions.";
   }
 
-  return createUserWithEmailAndPassword(auth, email, password);
+  return null;
 };
-export default validateForm;
+
+export default getSignupValidationError;

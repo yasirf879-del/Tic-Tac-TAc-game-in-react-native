@@ -13,12 +13,16 @@ import { useNavigation } from "@react-navigation/native";
 import { Buttons, TextInputs } from "../components";
 import { auth } from "../../firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useGoogleLogin, useFacebookLogin } from "../auth/socialAuth";
 
 export default function Login() {
   const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const google = useGoogleLogin();
+  const facebook = useFacebookLogin();
+  const socialLoading = google.loading || facebook.loading;
 
   const handleLogin = () => {
     if (email.trim() === "") {
@@ -34,7 +38,6 @@ export default function Login() {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
         setIsLoading(false);
-        navigation.replace("Homepage");
       })
       .catch((error) => {
         setIsLoading(false);
@@ -65,6 +68,9 @@ export default function Login() {
           placeholderTextColor="#a39e9e"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
+          autoComplete="email"
+          keyboardType="email-address"
           showIcon={true}
           icon="mail"
           iconColor="#7C4DFF"
@@ -77,6 +83,7 @@ export default function Login() {
           secureTextEntry={true}
           value={password}
           onChangeText={setPassword}
+          autoComplete="current-password"
           showIcon={true}
           icon="lock"
           iconColor="#7C4DFF"
@@ -85,7 +92,7 @@ export default function Login() {
         <StatusBar style="auto" />
         <TouchableOpacity
           style={styles.forgetbutton}
-          onPress={() => Alert.alert("forget button pressed!")}
+          onPress={() => navigation.navigate("ForgotPassword")}
           activeOpacity={0.7}
         >
           <Text
@@ -103,6 +110,7 @@ export default function Login() {
         <Buttons
           title={isLoading ? "" : "Login"}
           onPress={handleLogin}
+          disabled={isLoading}
           showIcon={false}
           iconColor="#ffffff"
           iconSize={20}
@@ -128,7 +136,8 @@ export default function Login() {
         >
           <TouchableOpacity
             style={styles.continueButton}
-            onPress={() => Alert.alert("Google button pressed!")}
+            onPress={google.signIn}
+            disabled={socialLoading}
           >
             <Image
               style={styles.imageto}
@@ -137,7 +146,8 @@ export default function Login() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.continueButton}
-            onPress={() => Alert.alert("Facebook button pressed!")}
+            onPress={facebook.signIn}
+            disabled={socialLoading}
           >
             <Image
               style={styles.imageto}
@@ -145,6 +155,13 @@ export default function Login() {
             />
           </TouchableOpacity>
         </View>
+        {socialLoading && (
+          <ActivityIndicator
+            size="small"
+            color="#7C4DFF"
+            style={{ marginTop: 14, alignSelf: "center" }}
+          />
+        )}
         <View style={styles.signupbutton}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity

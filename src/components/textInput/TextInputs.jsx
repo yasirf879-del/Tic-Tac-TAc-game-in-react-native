@@ -21,6 +21,9 @@ export const TextInputs = ({
   icon,
   iconColor,
   iconSize,
+  autoCapitalize,
+  autoComplete,
+  keyboardType,
 }) => {
   return (
     <View style={styles.inputContainer}>
@@ -34,6 +37,9 @@ export const TextInputs = ({
         secureTextEntry={secureTextEntry}
         value={value}
         onChangeText={onChangeText}
+        autoCapitalize={autoCapitalize}
+        autoComplete={autoComplete}
+        keyboardType={keyboardType}
       />
     </View>
   );

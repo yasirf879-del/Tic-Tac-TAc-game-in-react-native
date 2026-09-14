@@ -8,19 +8,23 @@ import {
 
 import { useState } from "react";
 import styles from "./Profile-style";
-import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase.config";
-export default function Profile({ onClose }) {
-  const navigation = useNavigation();
+export default function Profile({
+  onClose,
+  totalGames = 0,
+  playerXWins = 0,
+  playerOWins = 0,
+  drawGames = 0,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const user = auth.currentUser;
+  const totalWins = playerXWins + playerOWins;
+  const totalLosses = totalGames - totalWins - drawGames;
   const signoutUser = async () => {
     try {
       setIsLoading(true);
       await signOut(auth);
-      setIsLoading(false);
-      navigation.replace("Login");
     } catch (error) {
       setIsLoading(false);
       Alert.alert("Error", error.message);
@@ -38,19 +42,25 @@ export default function Profile({ onClose }) {
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{user?.email || "—"}</Text>
+        <Text style={styles.value} numberOfLines={1}>
+          {user?.email || "—"}
+        </Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Total games:</Text>
-        <Text style={styles.value}>0</Text>
+        <Text style={styles.value}>{totalGames}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Win:</Text>
-        <Text style={styles.value}>0</Text>
+        <Text style={styles.value}>{totalWins}</Text>
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Lose:</Text>
-        <Text style={styles.value}>0</Text>
+        <Text style={styles.value}>{totalLosses}</Text>
+      </View>
+      <View style={styles.row}>
+        <Text style={styles.label}>Draw:</Text>
+        <Text style={styles.value}>{drawGames}</Text>
       </View>
 
       <TouchableOpacity
