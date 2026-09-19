@@ -18,9 +18,12 @@ export default function Profile({
   drawGames = 0,
 }) {
   const [isLoading, setIsLoading] = useState(false);
+
   const user = auth.currentUser;
-  const totalWins = playerXWins + playerOWins;
-  const totalLosses = totalGames - totalWins - drawGames;
+
+  const totalWins = playerXWins;
+  const totalLosses = playerOWins;
+  const totalDraws = drawGames;
   const signoutUser = async () => {
     try {
       setIsLoading(true);

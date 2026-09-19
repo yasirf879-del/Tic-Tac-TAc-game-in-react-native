@@ -41,15 +41,14 @@ export const handleMove = ({
   setDrawGames,
 }) => {
   if (board[index] !== "") {
-    return;
+    return null;
   }
 
   if (winner || isDraw) {
-    return;
+    return null;
   }
 
   const newBoard = [...board];
-
   newBoard[index] = currentPlayer;
 
   setBoard(newBoard);
@@ -59,21 +58,35 @@ export const handleMove = ({
   if (gameWinner) {
     setWinner(gameWinner.player);
     setWinningPattern(gameWinner.pattern);
+
     if (gameWinner.player === "X") {
       setPlayerXWins((prev) => prev + 1);
     } else {
       setPlayerOWins((prev) => prev + 1);
     }
+
     setTotalGames((prev) => prev + 1);
-    return;
+
+    return {
+      winner: gameWinner.player,
+      isDraw: false,
+    };
   }
+
   if (!newBoard.includes("")) {
     setIsDraw(true);
     setDrawGames((prev) => prev + 1);
     setTotalGames((prev) => prev + 1);
-    return;
+
+    return {
+      winner: null,
+      isDraw: true,
+    };
   }
+
   setCurrentPlayer(currentPlayer === "X" ? "O" : "X");
+
+  return null;
 };
 
 export const emptyBoard = ({

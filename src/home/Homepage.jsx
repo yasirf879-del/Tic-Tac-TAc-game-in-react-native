@@ -1,29 +1,33 @@
 import {
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   useWindowDimensions,
+  Alert,
 } from "react-native";
 import { BlurView } from "expo-blur";
 import { StatusBar } from "expo-status-bar";
 import styles from "./Homepage_style";
 import * as Icon from "@expo/vector-icons";
 import { useState, useEffect } from "react";
-import { useRoute } from "@react-navigation/native";
 import Profile from "../screens/Profile";
 import ScoreBoard from "../screens/ScoreBoard";
-import { handleMove, emptyBoard } from "./gameLogic";
-import { getUserStats, saveUserStats } from "../storage/statsStorage";
-import { auth } from "../../firebase.config";
 
+import { handleMove, emptyBoard } from "./gameLogic";
+import { auth, db } from "../../firebase.config";
+import { doc, onSnapshot } from "firebase/firestore";
+import { saveGameResult } from "../manager/authManager";
+import { useNavigation } from "@react-navigation/native";
+import HomeComponent from "../screens/HomeComponent";
 export default function Homepage() {
-  const route = useRoute();
-  const email = route.params?.email || auth.currentUser?.email || "";
+  const user = auth.currentUser;
+  const playerXName = user?.displayName || "Player X";
   const { width } = useWindowDimensions();
   const boxSize = Math.floor((width * 0.82) / 3.6);
   const boardHeight = boxSize * 3 + 24;
+  const navigation = useNavigation();
 
+  const [showHome, setShowHome] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showScore, setShowScore] = useState(false);
   const [board, setBoard] = useState(["", "", "", "", "", "", "", "", ""]);
@@ -35,35 +39,25 @@ export default function Homepage() {
   const [totalGames, setTotalGames] = useState(0);
   const [winningPattern, setWinningPattern] = useState(null);
   const [drawGames, setDrawGames] = useState(0);
-  const [statsLoaded, setStatsLoaded] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    getUserStats(email).then((stats) => {
-      if (!mounted) return;
-      setPlayerXWins(stats.playerXWins);
-      setPlayerOWins(stats.playerOWins);
-      setTotalGames(stats.totalGames);
-      setDrawGames(stats.drawGames);
-      setStatsLoaded(true);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, [email]);
+    if (!user) return;
 
-  useEffect(() => {
-    if (!statsLoaded) return;
-    saveUserStats(email, {
-      playerXWins,
-      playerOWins,
-      totalGames,
-      drawGames,
+    const userRef = doc(db, "users", user.uid);
+    const unsubscribe = onSnapshot(userRef, (snapshot) => {
+      if (!snapshot.exists()) return;
+      const data = snapshot.data();
+      setPlayerXWins(data.playerXWins || 0);
+      setPlayerOWins(data.playerOWins || 0);
+      setTotalGames(data.totalGames || 0);
+      setDrawGames(data.drawGames || 0);
     });
-  }, [playerXWins, playerOWins, totalGames, drawGames, statsLoaded, email]);
 
-  const onHandleMove = (index) => {
-    handleMove({
+    return () => unsubscribe();
+  }, [user]);
+
+  const onHandleMove = async (index) => {
+    const result = handleMove({
       index,
       board,
       currentPlayer,
@@ -79,6 +73,15 @@ export default function Homepage() {
       setTotalGames,
       setDrawGames,
     });
+    if (!result || !user) {
+      return;
+    }
+
+    try {
+      await saveGameResult(user, result.winner, playerXName);
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
   };
 
   const onNewGame = () => {
@@ -205,11 +208,15 @@ export default function Homepage() {
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerIcon}>
+        <TouchableOpacity
+          style={styles.footerIcon}
+          onPress={() => setShowHome(true)}
+        >
           <Icon.Ionicons name="home" size={20} color="black" />
 
           <Text style={styles.footerText}>Home</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.footerIcon}
           onPress={() => setShowScore(true)}
@@ -218,6 +225,7 @@ export default function Homepage() {
 
           <Text style={styles.footerText}>Score</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.footerIcon}
           onPress={() => setShowProfile(true)}
@@ -226,6 +234,24 @@ export default function Homepage() {
           <Text style={styles.footerText}>Profile</Text>
         </TouchableOpacity>
       </View>
+      {showHome && (
+        <View style={styles.overlay}>
+          <BlurView intensity={100} tint="dark" style={styles.backdrop} />
+
+          <TouchableOpacity
+            style={styles.backdrop}
+            activeOpacity={1}
+            onPress={() => setShowHome(false)}
+          />
+          <HomeComponent
+            onClose={() => setShowHome(false)}
+            onConfirm={() => {
+              setShowHome(false);
+              navigation.navigate("Dashboard");
+            }}
+          />
+        </View>
+      )}
 
       {showProfile && (
         <View style={styles.overlay}>

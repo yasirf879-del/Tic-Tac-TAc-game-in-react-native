@@ -1,5 +1,5 @@
-import { StyleSheet, View, TextInput } from "react-native";
-import React from "react";
+import { StyleSheet, View, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
 import * as Icon from "@expo/vector-icons";
 /***
  * placeholder: string
@@ -25,6 +25,8 @@ export const TextInputs = ({
   autoComplete,
   keyboardType,
 }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
     <View style={styles.inputContainer}>
       {showIcon && (
@@ -34,13 +36,27 @@ export const TextInputs = ({
         style={styles.inputtext}
         placeholder={placeholder}
         placeholderTextColor={placeholderTextColor}
-        secureTextEntry={secureTextEntry}
+        secureTextEntry={secureTextEntry && !isPasswordVisible}
         value={value}
         onChangeText={onChangeText}
         autoCapitalize={autoCapitalize}
         autoComplete={autoComplete}
         keyboardType={keyboardType}
       />
+      {secureTextEntry && (
+        <TouchableOpacity
+          onPress={() => setIsPasswordVisible((prev) => !prev)}
+          activeOpacity={0.7}
+          style={styles.eyeButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon.MaterialIcons
+            name={isPasswordVisible ? "visibility-off" : "visibility"}
+            size={22}
+            color="#7C4DFF"
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -67,5 +83,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     fontSize: 16,
     fontWeight: "bold",
+  },
+  eyeButton: {
+    paddingHorizontal: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

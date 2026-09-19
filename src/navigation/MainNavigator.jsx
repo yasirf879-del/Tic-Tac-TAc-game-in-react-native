@@ -10,6 +10,8 @@ import ForgotPassword from "../screens/ForgotPassword";
 import TermsConditions from "../screens/TermsConditions";
 import PrivacyPolicy from "../screens/PrivacyPolicy";
 import Home from "../home/Homepage";
+import Dashboard from "../screens/Dashboard";
+import AIGame from "../screens/AIGame";
 import { auth } from "../../firebase.config";
 const Stack = createNativeStackNavigator();
 
@@ -21,8 +23,9 @@ function AuthStack() {
       }}
     >
       <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Signup" component={Signup} />
+
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <Stack.Screen name="Signup" component={Signup} />
       <Stack.Screen name="TermsConditions" component={TermsConditions} />
       <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
     </Stack.Navigator>
@@ -36,7 +39,10 @@ function AppStack() {
         headerShown: false,
       }}
     >
+      <Stack.Screen name="Dashboard" component={Dashboard} />
       <Stack.Screen name="Homepage" component={Home} />
+
+      <Stack.Screen name="AIGame" component={AIGame} />
     </Stack.Navigator>
   );
 }

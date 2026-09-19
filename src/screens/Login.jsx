@@ -7,13 +7,15 @@ import {
   View,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { ImageBackground, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Buttons, TextInputs } from "../components";
 import { auth } from "../../firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useGoogleLogin, useFacebookLogin } from "../auth/socialAuth";
+import { useGoogleLogin } from "../auth/socialAuth";
 
 export default function Login() {
   const navigation = useNavigation();
@@ -21,8 +23,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const google = useGoogleLogin();
-  const facebook = useFacebookLogin();
-  const socialLoading = google.loading || facebook.loading;
+
+  const socialLoading = google.loading;
 
   const handleLogin = () => {
     if (email.trim() === "") {
@@ -45,7 +47,10 @@ export default function Login() {
       });
   };
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <ImageBackground
         style={styles.Backimage}
         source={require("../../assets/i.png")}
@@ -144,16 +149,6 @@ export default function Login() {
               source={require("../../assets/google.png")}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.continueButton}
-            onPress={facebook.signIn}
-            disabled={socialLoading}
-          >
-            <Image
-              style={styles.imageto}
-              source={require("../../assets/Facebook.png")}
-            />
-          </TouchableOpacity>
         </View>
         {socialLoading && (
           <ActivityIndicator
@@ -180,7 +175,7 @@ export default function Login() {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

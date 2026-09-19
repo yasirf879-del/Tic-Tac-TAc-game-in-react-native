@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   boxText: {
-    fontSize: 20,
+    fontSize: 12,
     fontWeight: "bold",
     color: "#272137",
     textAlign: "center",
